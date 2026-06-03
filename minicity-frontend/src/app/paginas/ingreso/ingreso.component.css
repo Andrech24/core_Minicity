@@ -1,0 +1,91 @@
+.ingreso {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.panel {
+  width: min(420px, 100%);
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(17, 38, 58, 0.12);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.logo {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 8px;
+  background: var(--azul);
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+p {
+  margin: 4px 0 0;
+  color: var(--suave);
+}
+
+.formulario {
+  display: grid;
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: #34465b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cfdce5;
+  border-radius: 6px;
+  color: var(--texto);
+  background: #fff;
+}
+
+button {
+  height: 44px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 700;
+  background: var(--rojo);
+}
+
+button:disabled {
+  opacity: 0.65;
+}
+
+.error {
+  margin-top: 14px;
+  color: #b42318;
+  font-weight: 700;
+}
+
+.ayuda {
+  margin-top: 16px;
+  font-size: 13px;
+}

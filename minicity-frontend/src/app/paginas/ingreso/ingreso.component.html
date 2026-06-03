@@ -1,0 +1,30 @@
+<main class="ingreso">
+  <section class="panel">
+    <div class="marca">
+      <div class="logo">MC</div>
+      <div>
+        <h1>MiniCity Core</h1>
+        <p>Administracion del parque</p>
+      </div>
+    </div>
+
+    <form (ngSubmit)="ingresar()" class="formulario">
+      <label>
+        Correo
+        <input name="email" type="email" [(ngModel)]="email" autocomplete="username" required>
+      </label>
+
+      <label>
+        Clave
+        <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required>
+      </label>
+
+      <button type="submit" [disabled]="cargando">
+        {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <p class="error" *ngIf="mensaje">{{ mensaje }}</p>
+    <p class="ayuda">Usuario: admin&#64;minicity.com / Clave: admin123</p>
+  </section>
+</main>

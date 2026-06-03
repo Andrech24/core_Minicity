@@ -1,0 +1,189 @@
+<main class="app">
+  <header class="cabecera">
+    <div class="marca">
+      <div class="logo">MC</div>
+      <div>
+        <h1>MiniCity</h1>
+        <p>Administracion del core conectado a Neon</p>
+      </div>
+    </div>
+
+    <nav>
+      <button type="button" class="secundario" (click)="cargarTodo()">Actualizar</button>
+      <button type="button" class="primario" (click)="mostrarFormulario ? cancelarEdicion() : mostrarFormulario = true">
+        {{ mostrarFormulario ? 'Cerrar formulario' : '+ Nuevo nino' }}
+      </button>
+      <button type="button" class="salir" (click)="cerrarSesion()">Cerrar sesion</button>
+    </nav>
+  </header>
+
+  <section class="tarjetas">
+    <article>
+      <span>Registros</span>
+      <strong>{{ resumen.registros }}</strong>
+      <small>ninos guardados</small>
+    </article>
+    <article>
+      <span>Monedas</span>
+      <strong>{{ resumen.monedas }}</strong>
+      <small>dinero virtual</small>
+    </article>
+    <article>
+      <span>Cumpleanos</span>
+      <strong>{{ resumen.cumpleanos }}</strong>
+      <small>reservas tipo cumpleanos</small>
+    </article>
+    <article>
+      <span>Escolares</span>
+      <strong>{{ resumen.escolares }}</strong>
+      <small>visitas escolares</small>
+    </article>
+  </section>
+
+  <section class="analisis" [class.subio]="resumen.comparacionTemporada.estado === 'subio'" [class.bajo]="resumen.comparacionTemporada.estado === 'bajo'">
+    <div>
+      <span>Comparacion de temporada</span>
+      <h2>{{ resumen.comparacionTemporada.mensaje || 'Analisis mensual de entradas' }}</h2>
+      <p>
+        Mes anterior {{ resumen.comparacionTemporada.mesAnterior || '-' }}:
+        <strong>{{ resumen.comparacionTemporada.personasMesAnterior }}</strong>
+        entradas
+      </p>
+      <p>
+        Mes actual {{ resumen.comparacionTemporada.mesActual || '-' }}:
+        <strong>{{ resumen.comparacionTemporada.personasMesActual }}</strong>
+        entradas
+      </p>
+    </div>
+    <div class="resultado">
+      <strong>{{ resumen.comparacionTemporada.diferencia > 0 ? '+' : '' }}{{ resumen.comparacionTemporada.diferencia }}</strong>
+      <small>{{ resumen.comparacionTemporada.porcentaje > 0 ? '+' : '' }}{{ resumen.comparacionTemporada.porcentaje }}%</small>
+    </div>
+  </section>
+
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+
+  <section class="formulario" *ngIf="mostrarFormulario">
+    <h2>{{ nuevoNino.id ? 'Editar registro' : 'Nuevo registro' }}</h2>
+    <form (ngSubmit)="guardarNino()">
+      <label>
+        Nino
+        <input name="nombre" [(ngModel)]="nuevoNino.nombre" required>
+      </label>
+      <label>
+        Edad
+        <input name="edad" type="number" min="1" [(ngModel)]="nuevoNino.edad" required>
+      </label>
+      <label>
+        Representante
+        <input name="representante" [(ngModel)]="nuevoNino.representante" required>
+      </label>
+      <label>
+        Cedula
+        <input name="cedula" maxlength="10" [(ngModel)]="nuevoNino.cedulaRepresentante" required>
+      </label>
+      <label>
+        Telefono
+        <input name="telefono" [(ngModel)]="nuevoNino.telefono">
+      </label>
+      <label>
+        Tipo entrada
+        <select name="tipoEntrada" [(ngModel)]="nuevoNino.tipoEntradaId">
+          <option *ngFor="let tipo of tiposEntrada" [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+        </select>
+      </label>
+      <label>
+        Monedas
+        <input name="monedas" type="number" min="0" [(ngModel)]="nuevoNino.dineroVirtual">
+      </label>
+      <label>
+        Puntos
+        <input name="puntos" type="number" min="0" [(ngModel)]="nuevoNino.puntosAcumulados">
+      </label>
+      <button type="submit" class="primario" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (nuevoNino.id ? 'Actualizar nino' : 'Guardar nino') }}
+      </button>
+      <button type="button" class="salir" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  </section>
+
+  <section class="tabla">
+    <div class="titulo-tabla">
+      <div>
+        <h2>Ninos registrados</h2>
+        <p>Listado general cargado directamente desde Neon.</p>
+      </div>
+      <strong>{{ ninos.length }} registros</strong>
+    </div>
+
+    <div class="cargando" *ngIf="cargando">Cargando informacion...</div>
+
+    <table *ngIf="!cargando">
+      <thead>
+        <tr>
+          <th>Nino</th>
+          <th>Edad</th>
+          <th>Representante</th>
+          <th>Cedula</th>
+          <th>Telefono</th>
+          <th>Tipo entrada</th>
+          <th>Monedas</th>
+          <th>Puntos</th>
+          <th>Fecha ingreso</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let nino of ninos">
+          <td>{{ nino.nombre }}</td>
+          <td>{{ nino.edad }}</td>
+          <td>{{ nino.representante }}</td>
+          <td>{{ nino.cedulaRepresentante }}</td>
+          <td>{{ nino.telefono }}</td>
+          <td>{{ nino.tipoEntradaNombre || nino.tipoEntrada?.nombre || 'Sin tipo' }}</td>
+          <td>{{ nino.dineroVirtual }}</td>
+          <td>{{ nino.puntosAcumulados }}</td>
+          <td>{{ nino.fechaIngreso || 'Sin fecha' }}</td>
+          <td class="acciones">
+            <button type="button" class="secundario" (click)="editarNino(nino)">Editar</button>
+            <button type="button" class="peligro" (click)="eliminarNino(nino)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="ninos.length === 0">
+          <td colspan="10" class="vacio">No hay registros todavia.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="reservas">
+    <div class="bloque">
+      <h2>Reservas</h2>
+      <form (ngSubmit)="guardarReserva()" class="reserva-form">
+        <input name="nombreReserva" placeholder="Nino" [(ngModel)]="nuevaReserva.nombreNino" required>
+        <input name="representanteReserva" placeholder="Representante" [(ngModel)]="nuevaReserva.representante" required>
+        <input name="telefonoReserva" placeholder="Telefono" [(ngModel)]="nuevaReserva.telefono" required>
+        <select name="tipoReserva" [(ngModel)]="nuevaReserva.tipoEntrada">
+          <option>Entrada normal</option>
+          <option>Cumpleanos</option>
+          <option>Visita escolar</option>
+        </select>
+        <button type="submit" class="primario">Agregar reserva</button>
+      </form>
+    </div>
+
+    <div class="bloque">
+      <h2>Ultimas reservas</h2>
+      <ul>
+        <li *ngFor="let reserva of reservas">
+          <span>{{ reserva.nombreNino }}</span>
+          <small>{{ reserva.tipoEntrada }} - {{ reserva.estado || 'pendiente' }}</small>
+        </li>
+        <li *ngIf="reservas.length === 0">
+          <span>Sin reservas</span>
+          <small>No hay datos guardados</small>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
